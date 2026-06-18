@@ -30,6 +30,8 @@ def build_rbz():
         ('autocajon/dialog.html', 'autocajon/dialog.html'),
         ('autocajon/dialog.css', 'autocajon/dialog.css'),
         ('autocajon/dialog.js', 'autocajon/dialog.js'),
+        ('autocajon/icons/autocajon_24.png', 'autocajon/icons/autocajon_24.png'),
+        ('autocajon/icons/autocajon_32.png', 'autocajon/icons/autocajon_32.png'),
     ]
 
     with zipfile.ZipFile(output, 'w', zipfile.ZIP_DEFLATED) as zf:

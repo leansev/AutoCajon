@@ -123,6 +123,10 @@ module BiraEstudio
       cmd.status_bar_text = 'Abre el panel AutoCajon para generar cajones'
       cmd.menu_text = 'AutoCajon'
 
+      icon_dir = File.join(PLUGIN_DIR, 'icons')
+      cmd.small_icon = File.join(icon_dir, 'autocajon_24.png')
+      cmd.large_icon = File.join(icon_dir, 'autocajon_32.png')
+
       toolbar = UI::Toolbar.new('AutoCajon')
       toolbar.add_item(cmd)
       toolbar.restore
