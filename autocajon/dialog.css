@@ -1,0 +1,113 @@
+/* AutoCajon - dialog.css - compacto y sincronizado - IE11/Trident */
+
+* { -ms-box-sizing: border-box; box-sizing: border-box; }
+
+html, body {
+  margin: 0; padding: 0; width: 100%; height: 100%;
+  background: #ffffff;
+  font-family: Arial, Helvetica, sans-serif;
+  color: #111827; font-size: 12px;
+}
+
+.clearfix:after { content: ""; display: table; clear: both; }
+
+.dialog-shell { width: 100%; padding: 6px 0; }
+.dialog-window { position: relative; width: 100%; max-width: 330px; margin: 0 auto; padding: 8px 10px 10px 10px; }
+
+/* ===== HEADER ===== */
+.dialog-header { position: relative; margin-bottom: 8px; padding-right: 20px; }
+.brand-icon {
+  float: left; width: 30px; height: 30px; margin-right: 8px;
+  background: #ef4423; color: #fff; border-radius: 5px;
+  font-size: 10px; font-weight: 700; text-align: center; line-height: 30px;
+  letter-spacing: 0.5px;
+}
+.header-text { overflow: hidden; }
+.header-text h1 { margin: 0 0 1px 0; font-size: 15px; font-weight: 700; line-height: 1.05; }
+.header-text p { margin: 0; font-size: 11px; color: #6b7280; line-height: 1.2; }
+.close-btn { position: absolute; top: 0; right: 0; width: 18px; height: 18px; padding: 0; border: 0; background: transparent; color: #6b7280; font-size: 18px; line-height: 14px; cursor: pointer; }
+.close-btn:hover { color: #111827; }
+
+/* ===== PANEL BASE ===== */
+.panel-base { position: relative; padding: 7px 8px; margin-bottom: 8px; background: #fafafa; border: 1px solid #d1d5db; border-radius: 6px; }
+.panel-base.is-selected { background: #f4fff2; border-color: #86c98b; }
+
+.base-thumb-col { float: left; width: 62px; margin-right: 8px; }
+.base-thumb { width: 58px; height: 38px; text-align: center; }
+.base-thumb-col .footer-btn { float: none; display: block; width: 100%; height: auto; margin: 4px 0 0 0; padding: 4px 2px; font-size: 11px; }
+
+.base-info-col { overflow: hidden; }
+.status-line { font-size: 12px; font-weight: 700; color: #15803d; margin-bottom: 5px; line-height: 16px; }
+.status-icon { display: inline-block; width: 15px; height: 15px; vertical-align: middle; margin-right: 4px; }
+#baseStatusText { vertical-align: middle; }
+
+.dim-card { padding: 5px 7px; background: #ffffff; border: 1px solid #d5ead3; border-radius: 5px; font-size: 11px; }
+.dim-row { padding: 1px 0; }
+.dim-row span { font-weight: 700; }
+
+.base-choice-col { clear: both; padding-top: 6px; margin-top: 6px; border-top: 1px solid #cfe8cf; }
+.choice-title { font-size: 11px; font-weight: 700; margin-bottom: 4px; }
+.choice-card { padding: 4px 7px; background: #ffffff; border: 1px solid #d1d5db; border-radius: 5px; }
+.radio-stack-item { position: relative; display: inline-block; width: 48%; vertical-align: top; }
+.radio-stack-item input { position: absolute; left: -9999px; }
+.radio-stack-item label { position: relative; display: block; padding: 3px 2px 3px 19px; font-size: 11px; cursor: pointer; }
+.radio-stack-item .radio-dot { position: absolute; left: 0; top: 3px; width: 13px; height: 13px; border: 2px solid #9ca3af; background: #fff; border-radius: 50%; }
+.radio-stack-item input:checked + label { color: #1d6fe0; }
+.radio-stack-item input:checked + label .radio-dot { border-color: #1d6fe0; }
+.radio-stack-item input:checked + label .radio-dot:after { content: ""; position: absolute; left: 2px; top: 2px; width: 5px; height: 5px; background: #1d6fe0; border-radius: 50%; }
+
+/* ===== PANELES ===== */
+.panel-options, .panel-table { padding: 8px; margin-bottom: 8px; background: #ffffff; border: 1px solid #e5e7eb; border-radius: 6px; }
+.panel-options h2, .panel-table h2 { margin: 0 0 6px 0; font-size: 13px; font-weight: 700; }
+
+.two-col { width: 100%; }
+.half-col { float: none; width: 100%; margin-bottom: 8px; }
+.half-col:last-child { margin-bottom: 0; }
+.left-col, .right-col { padding: 0; }
+.top-options-row { margin-bottom: 8px; }
+.bottom-options-row .half-col:first-child { margin-bottom: 8px; }
+
+.field-label { display: block; font-size: 11px; color: #374151; margin-bottom: 4px; }
+
+/* ===== PILL RADIOS ===== */
+.pill-group { font-size: 0; }
+.pill-item { display: inline-block; width: 48%; margin-right: 4%; vertical-align: top; }
+.pill-item:last-child { margin-right: 0; }
+.pill-item input { position: absolute; left: -9999px; }
+.pill-item label { position: relative; display: block; padding: 5px 3px 5px 22px; border: 1px solid #c4c7cc; background: #fff; border-radius: 5px; font-size: 11px; color: #374151; cursor: pointer; white-space: nowrap; }
+.pill-item .radio-dot { position: absolute; left: 6px; top: 6px; width: 12px; height: 12px; border: 2px solid #9ca3af; background: #fff; border-radius: 50%; }
+.pill-item input:checked + label { border-color: #1d6fe0; color: #1d6fe0; background: #f4f9ff; }
+.pill-item input:checked + label .radio-dot { border-color: #1d6fe0; }
+.pill-item input:checked + label .radio-dot:after { content: ""; position: absolute; left: 2px; top: 2px; width: 4px; height: 4px; background: #1d6fe0; border-radius: 50%; }
+
+/* ===== NUMBER FIELD ===== */
+.number-field { position: relative; }
+.number-field input { width: 100%; height: 28px; padding: 2px 34px 2px 8px; border: 1px solid #c4c7cc; border-radius: 5px; background: #fff; color: #111827; font-size: 13px; }
+.number-field input:focus { outline: none; border-color: #1d6fe0; }
+.number-field .unit { position: absolute; right: 8px; top: 6px; font-size: 11px; color: #6b7280; }
+
+/* ===== BOTÓN GENERAR ===== */
+.primary-action { margin-bottom: 8px; }
+.primary-action button { display: block; width: 100%; height: 36px; border: 0; border-radius: 6px; background: #1d6fe0; color: #fff; font-size: 14px; font-weight: 700; letter-spacing: 0.3px; cursor: pointer; }
+.primary-action button:hover { background: #1a63c7; }
+.primary-action button:disabled { background: #9ca3af; cursor: default; }
+
+/* ===== TABLA ===== */
+.table-wrap { width: 100%; overflow-x: auto; }
+.data-table { width: 100%; min-width: 300px; border-collapse: collapse; }
+.data-table th { height: 24px; padding: 0 3px; background: #f3f4f6; color: #6b7280; font-weight: 600; font-size: 10px; text-align: center; border-bottom: 1px solid #e5e7eb; }
+.data-table td { height: 26px; padding: 0 3px; text-align: center; font-size: 11px; color: #1f2937; border-bottom: 1px solid #f1f1f1; white-space: nowrap; }
+.data-table td.nombre { font-weight: 600; }
+.data-table tr.row { cursor: pointer; }
+.data-table tr.row.sel { background: #fff4e6; }
+.data-table tr.row.sel td { color: #c2410c; }
+.empty-msg { text-align: center; color: #9ca3af; font-size: 11px; padding: 10px 0; }
+
+/* ===== FOOTER (3 en una fila) ===== */
+.dialog-footer { padding-top: 2px; font-size: 0; }
+.footer-btn { display: inline-block; width: 32%; margin-right: 2%; height: 30px; border: 1px solid #c4c7cc; border-radius: 5px; background: #fff; color: #111827; font-size: 11px; cursor: pointer; text-align: center; vertical-align: top; }
+.dialog-footer .footer-btn:last-child { margin-right: 0; }
+.footer-btn:hover { background: #f3f4f6; }
+.footer-btn.is-picking { background: #ecfdf3; border-color: #25a71a; color: #15803d; }
+.footer-icon { display: inline-block; width: 13px; height: 13px; vertical-align: -2px; margin-right: 4px; }
+.footer-text { vertical-align: middle; }
