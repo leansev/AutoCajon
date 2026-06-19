@@ -61,11 +61,11 @@ function setPickingState(active) {
   btn.className = active ? 'footer-btn is-picking' : 'footer-btn';
 }
 
-function clearBaseUI() {
+function clearBaseUI(statusText) {
   BASE = null;
   $("panelBase").className = 'panel panel-base clearfix';
   if ($('baseIcon')) $('baseIcon').style.display = 'none';
-  $('baseStatusText').innerHTML = 'Sin base seleccionada';
+  $('baseStatusText').innerHTML = statusText || 'Sin base seleccionada';
   $('dimLargo').innerHTML = '&mdash;';
   $('dimAncho').innerHTML = '&mdash;';
   $('optLargo').innerHTML = '&mdash;';
@@ -195,7 +195,7 @@ function marcarFilaSel() {
   }
 }
 
-function resetForm() {
+function resetFormFull() {
   clearBaseUI();
   $('profundidad').value = '';
   $('alto').value = '';
@@ -207,6 +207,12 @@ function resetForm() {
   $('ladoAncho').checked = false;
   FILA_SEL = null;
   marcarFilaSel();
+}
+
+function resetForm() {
+  clearBaseUI('Caj\u00f3n creado. Seleccion\u00e1 la base del siguiente.');
+  $('ladoLargo').checked = false;
+  $('ladoAncho').checked = false;
 }
 
 window.setPickingState = setPickingState;

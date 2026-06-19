@@ -35,6 +35,7 @@ PATTERNS = {
         'btnPickBase',
         'escJsStr',
         'applyBaseData',
+        'resetFormFull',
     ],
     'autocajon/dialog.html': [
         'id="btnPickBase"',
