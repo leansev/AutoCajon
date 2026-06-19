@@ -26,17 +26,14 @@ module BiraEstudio
         end
 
         def start_face_pick
-          puts "[AutoCajon DIAG] start_face_pick: ANTES close/select_tool, dialog.visible?=#{@dialog && @dialog.visible?}"
           ensure_dialog
           @picking = true
           @dialog_closed_for_pick = true
           @dialog.close if @dialog.visible?
           Sketchup.active_model.select_tool(PickBaseTool.new)
-          puts "[AutoCajon DIAG] start_face_pick: DESPUES select_tool, dialog.visible?=#{@dialog && @dialog.visible?}"
         end
 
         def finish_face_pick(dims)
-          puts "[AutoCajon DIAG] finish_face_pick: dims=#{dims.inspect}, dialog.visible?=#{@dialog && @dialog.visible?}"
           @picking = false
           @pending_base_dims = dims
           reopen_after_pick
@@ -126,7 +123,6 @@ module BiraEstudio
           end
 
           dialog.add_action_callback('pick_base') do |_ctx|
-            puts '[AutoCajon DIAG] callback pick_base invocado'
             Dialog.start_face_pick
           end
 

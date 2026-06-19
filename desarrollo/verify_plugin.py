@@ -71,7 +71,7 @@ def check_repo():
 
 
 def check_rbz():
-    rbz_path = os.path.join(REPO_ROOT, 'instalable', 'AutoCajon_v1.0.0.rbz')
+    rbz_path = os.path.join(REPO_ROOT, 'instalador SKP2017', 'AutoCajon_v1.0.0.rbz')
     if not os.path.exists(rbz_path):
         return [f'Falta instalable: {rbz_path}']
 

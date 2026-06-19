@@ -17,7 +17,7 @@ def read_version():
 
 def build_rbz():
     version = read_version()
-    output_dir = os.path.join(REPO_ROOT, 'instalable')
+    output_dir = os.path.join(REPO_ROOT, 'instalador SKP2017')
     os.makedirs(output_dir, exist_ok=True)
     output = os.path.join(output_dir, f'AutoCajon_v{version}.rbz')
 
