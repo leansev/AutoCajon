@@ -36,6 +36,7 @@ PATTERNS = {
         'escJsStr',
         'applyBaseData',
         'resetFormFull',
+        'console.error("[AutoCajon] callback no disponible:',
     ],
     'autocajon/dialog.html': [
         'id="btnPickBase"',

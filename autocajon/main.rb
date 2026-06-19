@@ -55,8 +55,6 @@ module BiraEstudio
             style: UI::HtmlDialog::STYLE_WINDOW
           )
 
-          dialog.set_file(html_path)
-
           dialog.add_action_callback('dialog_ready') do |_ctx|
             model = Sketchup.active_model
             Store.push_lista(dialog, model)
@@ -122,6 +120,8 @@ module BiraEstudio
             Store.highlight_entity(entity)
             Sketchup.status_text = "Cajón seleccionado: #{nombre}"
           end
+
+          dialog.set_file(html_path)
 
           dialog.set_on_closed do
             Store.clear_highlight

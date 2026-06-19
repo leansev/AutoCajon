@@ -1,6 +1,5 @@
 /* AutoCajon - dialog.js - Compatible IE11 / Trident */
-/* Puente con Ruby vía window.location = 'skp:callback@params' o sketchup.callback() */
-/* SketchUp 2017 soporta sketchup.<nombre>(json) si se registran los callbacks con add_action_callback */
+/* Puente con Ruby vía window.sketchup.<callback>(json) (HtmlDialog add_action_callback) */
 
 var BASE = null;   /* { largo: Number, ancho: Number } detectado del clic */
 var FILA_SEL = null;
@@ -31,14 +30,12 @@ function anchoElegido() {
 }
 
 /* ---------- llamada a Ruby ---------- */
-/* Usa sketchup.<callback> si existe (SU2017+), si no cae a skp: url */
 function callRuby(name, payloadObj) {
   var json = payloadObj ? JSON.stringify(payloadObj) : "";
   if (window.sketchup && typeof window.sketchup[name] === "function") {
     window.sketchup[name](json);
   } else {
-    var q = json ? encodeURIComponent(json) : "";
-    window.location = "skp:" + name + "@" + q;
+    console.error("[AutoCajon] callback no disponible: " + name);
   }
 }
 
