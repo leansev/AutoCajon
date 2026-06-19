@@ -4,36 +4,39 @@
 module BiraEstudio
   module AutoCajon
     class PickBaseTool
-      def initialize(dialog)
-        @dialog = dialog
+      PICK_APERTURE = 12
+
+      def initialize
+        @completed = false
       end
 
       def activate
-        Sketchup.status_text = 'Click en la cara base del vano (1 clic)'
+        Sketchup.status_text = 'Click en la cara base del vano (1 clic). Esc = cancelar.'
         view = Sketchup.active_model.active_view
         view.invalidate if view
       end
 
       def deactivate(_view)
         Sketchup.status_text = ''
+        Dialog.cancel_face_pick unless @completed
       end
 
       def onCancel(_reason, _view)
+        @completed = true
         Sketchup.active_model.select_tool(nil)
+        Dialog.cancel_face_pick
       end
 
       def onLButtonDown(_flags, x, y, view)
         model = Sketchup.active_model
-        ph = view.pick_helper
-        ph.do_pick(x, y)
-        face = ph.picked_face
+        face = pick_face(view, x, y)
 
         unless face
-          UI.messagebox('Seleccione una cara válida.')
+          UI.messagebox('Seleccione una cara valida.')
           return
         end
 
-        dims = face_axes(face)
+        dims = face_dimensions_mm(face)
         unless dims
           UI.messagebox('No se pudieron leer las dimensiones de la cara.')
           return
@@ -41,18 +44,37 @@ module BiraEstudio
 
         orient = face_orientation(face)
         unless orient
-          UI.messagebox('No se pudo determinar la orientación de la cara.')
+          UI.messagebox('No se pudo determinar la orientacion de la cara.')
           return
         end
 
+        @completed = true
         Store.set_base(orient)
-        Store.push_base(@dialog, dims)
-
-        Sketchup.status_text = "Base: #{dims[:largo]} x #{dims[:ancho]} mm"
         model.select_tool(nil)
+        Dialog.finish_face_pick(dims)
+        Sketchup.status_text = "Base: #{dims[:largo]} x #{dims[:ancho]} mm"
       end
 
-      def face_axes(face)
+      def pick_face(view, x, y)
+        ph = view.pick_helper
+        ph.do_pick(x, y, PICK_APERTURE)
+
+        face = ph.picked_face
+        return face if face
+
+        (0...ph.count).each do |i|
+          path = ph.path_at(i)
+          next unless path
+
+          path.each do |entity|
+            return entity if entity.is_a?(Sketchup::Face)
+          end
+        end
+
+        nil
+      end
+
+      def face_dimensions_mm(face)
         bb = face.bounds
         return nil if bb.empty?
 

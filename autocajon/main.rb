@@ -22,6 +22,22 @@ module BiraEstudio
           @dialog.bring_to_front if @dialog.visible?
         end
 
+        def start_face_pick
+          @dialog ||= build_dialog
+          @dialog.close if @dialog.visible?
+          Sketchup.active_model.select_tool(PickBaseTool.new)
+        end
+
+        def finish_face_pick(dims)
+          show
+          Store.push_base(@dialog, dims)
+        end
+
+        def cancel_face_pick
+          show
+          Store.run_script(@dialog, 'setPickingState(false)')
+        end
+
         def dialog
           @dialog
         end
@@ -37,7 +53,7 @@ module BiraEstudio
             height: 440,
             min_width: 320,
             min_height: 400,
-            style: UI::HtmlDialog::STYLE_DIALOG
+            style: UI::HtmlDialog::STYLE_WINDOW
           )
 
           dialog.set_file(html_path)
@@ -49,7 +65,7 @@ module BiraEstudio
           end
 
           dialog.add_action_callback('pick_base') do |_ctx|
-            Sketchup.active_model.select_tool(PickBaseTool.new(dialog))
+            Dialog.start_face_pick
           end
 
           dialog.add_action_callback('generar') do |_ctx, json|
@@ -58,7 +74,7 @@ module BiraEstudio
             group = Geometria.generar(model, params, Store.base_data)
             if group
               Store.clear_base
-              dialog.execute_script('resetForm()')
+              Store.run_script(dialog, 'resetForm()')
               Store.push_lista(dialog, model)
             end
           end

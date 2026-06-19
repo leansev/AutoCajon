@@ -43,8 +43,16 @@ function callRuby(name, payloadObj) {
 }
 
 /* ---------- acciones (las llama el HTML) ---------- */
+function escJsStr(s) {
+  return String(s)
+    .replace(/\\/g, '\\\\')
+    .replace(/'/g, "\\'")
+    .replace(/\r/g, '')
+    .replace(/\n/g, '');
+}
+
 function btnSeleccionarBase() {
-  return document.querySelector('.base-thumb-col .footer-btn');
+  return document.getElementById('btnPickBase');
 }
 
 function setPickingState(active) {
@@ -114,14 +122,7 @@ function onSeleccionarFila(nombre) {
   callRuby('seleccionar_cajon', { nombre: nombre });
 }
 
-/* ---------- render que llama Ruby ---------- */
-/* Ruby llama: setBase(jsonString)  con {largo, ancho} o null */
-function setBase(jsonString) {
-  if (!jsonString || jsonString === 'null') {
-    clearBaseUI();
-    return;
-  }
-  var d = JSON.parse(jsonString);
+function applyBaseData(d) {
   BASE = { largo: d.largo, ancho: d.ancho };
   $('panelBase').className = 'panel panel-base clearfix is-selected';
   if ($('baseIcon')) $('baseIcon').style.display = 'inline-block';
@@ -133,11 +134,29 @@ function setBase(jsonString) {
   setPickingState(false);
 }
 
+/* ---------- render que llama Ruby ---------- */
+/* Ruby llama: setBase(jsonString)  con {largo, ancho} o null */
+function setBase(jsonString) {
+  if (jsonString == null || jsonString === '' || jsonString === 'null') {
+    clearBaseUI();
+    return;
+  }
+  if (typeof jsonString === 'object') {
+    applyBaseData(jsonString);
+    return;
+  }
+  applyBaseData(JSON.parse(jsonString));
+}
+
 /* Ruby llama: setLista(jsonString) con array de cajones */
 /* cada item: {nombre, ancho, alto, prof, espesor, corredera} */
 function setLista(jsonString) {
   var arr = [];
-  if (jsonString && jsonString !== "null") {
+  if (jsonString == null || jsonString === '' || jsonString === 'null') {
+    arr = [];
+  } else if (typeof jsonString === 'object' && jsonString.length != null) {
+    arr = jsonString;
+  } else {
     arr = JSON.parse(jsonString);
   }
   var body = $("tablaBody");
@@ -150,7 +169,7 @@ function setLista(jsonString) {
     var c = arr[i];
     var corr = (c.corredera === "telescopica") ? "Telesc\u00f3pica" : "Oculta";
     var selClass = (c.nombre === FILA_SEL) ? " sel" : "";
-    html += '<tr class="row' + selClass + '" onclick="onSeleccionarFila(\'' + c.nombre + '\')">';
+    html += '<tr class="row' + selClass + '" onclick="onSeleccionarFila(\'' + escJsStr(c.nombre) + '\')">';
     html += '<td class="nombre">' + c.nombre + '</td>';
     html += '<td>' + c.ancho + '</td>';
     html += '<td>' + c.alto + '</td>';
@@ -189,6 +208,8 @@ function resetForm() {
   FILA_SEL = null;
   marcarFilaSel();
 }
+
+window.setPickingState = setPickingState;
 
 /* avisar a Ruby que el dialog cargó, para que mande la lista persistida */
 window.onload = function () {

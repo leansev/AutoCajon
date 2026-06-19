@@ -119,21 +119,28 @@ module BiraEstudio
         end
 
         def push_lista(dialog, model)
-          json = JSON.generate(lista_json(model))
-          dialog.execute_script("setLista(#{json.inspect})")
+          payload = JSON.generate(lista_json(model))
+          run_script(dialog, "setLista(#{payload.inspect})")
         rescue StandardError => e
           puts "[AutoCajon] push_lista: #{e.message}"
         end
 
         def push_base(dialog, data)
           if data
-            json = JSON.generate(data)
-            dialog.execute_script("setBase(#{json.inspect})")
+            payload = JSON.generate(data)
+            run_script(dialog, "setBase(#{payload.inspect})")
           else
-            dialog.execute_script('setBase(null)')
+            run_script(dialog, 'setBase(null)')
           end
         rescue StandardError => e
           puts "[AutoCajon] push_base: #{e.message}"
+        end
+
+        def run_script(dialog, js)
+          return unless dialog
+
+          dialog.show unless dialog.visible?
+          dialog.execute_script(js)
         end
 
         # --- Resaltado naranja ---
