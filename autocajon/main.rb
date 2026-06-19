@@ -24,17 +24,16 @@ module BiraEstudio
 
         def start_face_pick
           @dialog ||= build_dialog
-          @dialog.close if @dialog.visible?
           Sketchup.active_model.select_tool(PickBaseTool.new)
         end
 
         def finish_face_pick(dims)
-          show
+          @dialog ||= build_dialog
           Store.push_base(@dialog, dims)
         end
 
         def cancel_face_pick
-          show
+          @dialog ||= build_dialog
           Store.run_script(@dialog, 'setPickingState(false)')
         end
 
