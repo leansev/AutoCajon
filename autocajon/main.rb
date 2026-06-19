@@ -14,31 +14,90 @@ module BiraEstudio
 
     class Dialog
       @dialog = nil
+      @picking = false
+      @pending_base_dims = nil
+      @dialog_closed_for_pick = false
 
       class << self
         def show
-          @dialog ||= build_dialog
+          ensure_dialog
           @dialog.show
           @dialog.bring_to_front if @dialog.visible?
         end
 
         def start_face_pick
-          @dialog ||= build_dialog
+          puts "[AutoCajon DIAG] start_face_pick: ANTES close/select_tool, dialog.visible?=#{@dialog&.visible?}"
+          ensure_dialog
+          @picking = true
+          @dialog_closed_for_pick = true
+          @dialog.close if @dialog.visible?
           Sketchup.active_model.select_tool(PickBaseTool.new)
+          puts "[AutoCajon DIAG] start_face_pick: DESPUES select_tool, dialog.visible?=#{@dialog&.visible?}"
         end
 
         def finish_face_pick(dims)
-          @dialog ||= build_dialog
-          Store.push_base(@dialog, dims)
+          puts "[AutoCajon DIAG] finish_face_pick: dims=#{dims.inspect}, dialog.visible?=#{@dialog&.visible?}"
+          @picking = false
+          @pending_base_dims = dims
+          reopen_after_pick
         end
 
         def cancel_face_pick
-          @dialog ||= build_dialog
-          Store.run_script(@dialog, 'setPickingState(false)')
+          @picking = false
+          @pending_base_dims = nil
+          reopen_after_pick(set_picking_false: true)
         end
 
         def dialog
           @dialog
+        end
+
+        def ensure_dialog
+          if @dialog.nil?
+            @dialog = build_dialog
+            return @dialog
+          end
+
+          begin
+            @dialog.visible?
+          rescue StandardError
+            @dialog = build_dialog
+          end
+
+          @dialog
+        end
+
+        def reopen_after_pick(set_picking_false: false)
+          if @dialog_closed_for_pick || @dialog.nil? || !dialog_responds?(@dialog)
+            @dialog = build_dialog
+            @dialog_closed_for_pick = false
+            @dialog.show
+            @dialog.bring_to_front if @dialog.visible?
+            return
+          end
+
+          @dialog_closed_for_pick = false
+          dlg = ensure_dialog
+          dlg.show
+          dlg.bring_to_front if dlg.visible?
+
+          if set_picking_false
+            Store.run_script(dlg, 'setPickingState(false)')
+          elsif @pending_base_dims
+            model = Sketchup.active_model
+            Store.push_lista(dlg, model)
+            Store.push_base(dlg, @pending_base_dims)
+            @pending_base_dims = nil
+          end
+        end
+
+        def dialog_responds?(dlg)
+          return false unless dlg
+
+          dlg.visible?
+          true
+        rescue StandardError
+          false
         end
 
         def build_dialog
@@ -52,16 +111,22 @@ module BiraEstudio
             height: 440,
             min_width: 320,
             min_height: 400,
-            style: UI::HtmlDialog::STYLE_WINDOW
+            style: UI::HtmlDialog::STYLE_DIALOG
           )
 
           dialog.add_action_callback('dialog_ready') do |_ctx|
             model = Sketchup.active_model
             Store.push_lista(dialog, model)
-            Store.push_base(dialog, nil)
+            if @pending_base_dims
+              Store.push_base(dialog, @pending_base_dims)
+              @pending_base_dims = nil
+            else
+              Store.push_base(dialog, nil)
+            end
           end
 
           dialog.add_action_callback('pick_base') do |_ctx|
+            puts '[AutoCajon DIAG] callback pick_base invocado'
             Dialog.start_face_pick
           end
 
@@ -92,6 +157,9 @@ module BiraEstudio
           end
 
           dialog.add_action_callback('cerrar') do |_ctx|
+            @picking = false
+            @pending_base_dims = nil
+            @dialog_closed_for_pick = false
             dialog.close
           end
 

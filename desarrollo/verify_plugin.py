@@ -17,10 +17,12 @@ REQUIRED = [
 
 PATTERNS = {
     'autocajon/main.rb': [
-        'STYLE_WINDOW',
+        'STYLE_DIALOG',
+        'ensure_dialog',
         'start_face_pick',
         'finish_face_pick',
         'cancel_face_pick',
+        '@pending_base_dims',
     ],
     'autocajon/seleccion.rb': [
         'pick_face',
