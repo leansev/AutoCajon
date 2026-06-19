@@ -86,14 +86,77 @@ def check_rbz():
     return errors
 
 
+RUBY22_FORBIDDEN = [
+    ('&.', 'safe navigation operator (Ruby 2.3+)'),
+    ('<<~', 'squiggly heredoc (Ruby 2.3+)'),
+]
+
+
+def check_ruby22_compat():
+    errors = []
+    rb_files = [
+        'autocajon/main.rb',
+        'autocajon/seleccion.rb',
+        'autocajon/store.rb',
+    ]
+    for rel in rb_files:
+        path = os.path.join(REPO_ROOT, rel)
+        if not os.path.exists(path):
+            continue
+        content = read(path)
+        for token, desc in RUBY22_FORBIDDEN:
+            if token in content:
+                errors.append(f'{rel}: sintaxis incompatible Ruby 2.2: {desc} ({token!r})')
+    return errors
+
+
+def check_ruby_syntax():
+    import subprocess
+    rb_files = [
+        'autocajon/main.rb',
+        'autocajon/seleccion.rb',
+        'autocajon/store.rb',
+    ]
+    errors = []
+    ruby_cmds = ['ruby']
+    for candidate in (
+        r'C:\Ruby22\bin\ruby.exe',
+        r'C:\Ruby22-x64\bin\ruby.exe',
+    ):
+        if os.path.isfile(candidate):
+            ruby_cmds.insert(0, candidate)
+    ruby = None
+    for cmd in ruby_cmds:
+        try:
+            subprocess.run([cmd, '-v'], capture_output=True, check=True, timeout=5)
+            ruby = cmd
+            break
+        except (FileNotFoundError, subprocess.CalledProcessError, OSError):
+            continue
+    if not ruby:
+        return ['ruby -c: ruby no encontrado en PATH (omitido)']
+    lines = []
+    for rel in rb_files:
+        path = os.path.join(REPO_ROOT, rel)
+        result = subprocess.run([ruby, '-c', path], capture_output=True, text=True, timeout=10)
+        out = (result.stdout + result.stderr).strip()
+        lines.append(f'{rel}: {out or "Syntax OK"}')
+        if result.returncode != 0:
+            errors.append(f'{rel}: {out}')
+    return errors if errors else lines
+
+
 def main():
-    errors = check_repo() + check_rbz()
+    errors = check_repo() + check_rbz() + check_ruby22_compat()
+    syntax = check_ruby_syntax()
     if errors:
         print('VERIFY FAIL')
         for item in errors:
             print(' -', item)
         sys.exit(1)
     print('VERIFY OK')
+    for line in syntax:
+        print(line)
 
 
 if __name__ == '__main__':
